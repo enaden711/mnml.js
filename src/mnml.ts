@@ -5,26 +5,35 @@
  */
 
 export type MnmlEventCallback = (ev?: Event, match?: HTMLElement) => void;
-export type MnmlEventCallbackGuaranteedParams = (ev: Event, match: HTMLElement) => void;
+export type MnmlEventCallbackGuaranteedParams = (
+  ev: Event,
+  match: HTMLElement,
+) => void;
 
 export interface ParamsObject {
   [key: string]: string | string[];
 }
 
 export const mnml = (() => {
-  const isInstance = (thing: any, kind: any, param: string): boolean => {
+  const isInstance = (
+    thing: unknown,
+    kind:
+      | (new (...args: unknown[]) => unknown)
+      | (new (...args: unknown[]) => unknown)[],
+    param: string,
+  ): boolean => {
     if (Array.isArray(kind)) {
       if (kind.find((k) => thing instanceof k)) {
         return true;
       }
       throw new Error(
-        `Expected ${param} to be one of ${kind.map((k) => k.name).join(", ")}`
+        `Expected ${param} to be one of ${kind.map((k) => k.name).join(", ")}`,
       );
     } else if (!(thing instanceof kind)) {
       throw new Error(
         `Expected ${param} to be a ${
           kind && (kind.name || (kind.constructor && kind.constructor.name))
-        }`
+        }`,
       );
     }
     return true;
@@ -48,28 +57,38 @@ export const mnml = (() => {
     return output;
   };
 
-  const html = (strings: TemplateStringsArray, ...values: any[]): DocumentFragment => {
+  const html = (
+    strings: TemplateStringsArray,
+    ...values: unknown[]
+  ): DocumentFragment => {
     return createHTML(
       strings
         .map((str, index) => {
-          return str + (typeof values[index] === "undefined" ? "" : values[index]);
+          return (
+            str + (typeof values[index] === "undefined" ? "" : values[index])
+          );
         })
-        .join("")
+        .join(""),
     );
   };
 
-  const text = (strings: TemplateStringsArray, ...values: any[]): Text => {
+  const text = (strings: TemplateStringsArray, ...values: unknown[]): Text => {
     const text = document.createTextNode(
       strings
         .map((str, index) => {
-          return str + (typeof values[index] === "undefined" ? "" : values[index]);
+          return (
+            str + (typeof values[index] === "undefined" ? "" : values[index])
+          );
         })
-        .join("")
+        .join(""),
     );
     return text;
   };
 
-  const find = (elem: HTMLElement | string, selector: string): HTMLElement | null => {
+  const find = (
+    elem: HTMLElement | string,
+    selector: string,
+  ): HTMLElement | null => {
     if (typeof elem === "string") {
       selector = elem;
       elem = document.documentElement;
@@ -77,19 +96,30 @@ export const mnml = (() => {
     return elem.querySelector(selector);
   };
 
-  const findAll = (elem: HTMLElement | string, selector: string): HTMLElement[] => {
+  const findAll = (
+    elem: HTMLElement | string,
+    selector: string,
+  ): HTMLElement[] => {
     if (typeof elem === "string") {
       selector = elem;
       elem = document.documentElement as HTMLElement;
     }
-    return [...elem.querySelectorAll(selector)].map((elem) => elem as HTMLElement);
+    return [...elem.querySelectorAll(selector)].map(
+      (elem) => elem as HTMLElement,
+    );
   };
 
-  const findParent = (elem: HTMLElement, selector: string): HTMLElement | null => {
+  const findParent = (
+    elem: HTMLElement,
+    selector: string,
+  ): HTMLElement | null => {
     return elem.closest(selector) || null;
   };
 
-  const findParents = (elem: HTMLElement, selector: string = "*"): HTMLElement[] => {
+  const findParents = (
+    elem: HTMLElement,
+    selector: string = "*",
+  ): HTMLElement[] => {
     const parents = [];
     let parent: HTMLElement | null = elem;
     while ((parent = parent.parentElement)) {
@@ -111,7 +141,10 @@ export const mnml = (() => {
         .shift()) as HTMLElement;
   };
 
-  const _loadListener = (callback: MnmlEventCallback, priority?: number): any => {
+  const _loadListener = (
+    callback: MnmlEventCallback,
+    priority?: number,
+  ): void => {
     priority = priority || 10;
     if (_loadListener.loaded) {
       return callback();
@@ -133,12 +166,16 @@ export const mnml = (() => {
     });
   }
 
-  const _readyListener = (callback: MnmlEventCallback, priority?: number): any => {
+  const _readyListener = (
+    callback: MnmlEventCallback,
+    priority?: number,
+  ): void => {
     priority = priority || 10;
     if (document.readyState === "loading") {
-      return _readyListener.queue.push([callback, priority]);
+      _readyListener.queue.push([callback, priority]);
+      return;
     }
-    return callback();
+    callback();
   };
   _readyListener.queue = [] as Array<[MnmlEventCallback, number]>;
   document.addEventListener("DOMContentLoaded", () => {
@@ -153,24 +190,28 @@ export const mnml = (() => {
 
   function listen(
     eventName: "unload" | "beforeunload",
-    selector: MnmlEventCallback
+    selector: MnmlEventCallback,
   ): void;
   function listen(
     eventName: "load" | "ready",
     selector: number | MnmlEventCallback,
-    callback?: MnmlEventCallback
+    callback?: MnmlEventCallback,
   ): void;
   function listen(
     eventName: string,
     selector: string,
     callback: MnmlEventCallbackGuaranteedParams,
-    replace?: boolean
+    replace?: boolean,
   ): void;
   function listen(
     eventName: string,
-    selector: string | number | MnmlEventCallback | MnmlEventCallbackGuaranteedParams,
+    selector:
+      | string
+      | number
+      | MnmlEventCallback
+      | MnmlEventCallbackGuaranteedParams,
     callback?: MnmlEventCallback | MnmlEventCallbackGuaranteedParams,
-    replace?: boolean
+    replace?: boolean,
   ): void {
     if (typeof replace === "undefined") {
       replace = true;
@@ -193,8 +234,9 @@ export const mnml = (() => {
       if (typeof selector !== "number") {
         throw new Error(
           `Expected selector to be a number but was ${
-            (selector && selector.constructor && selector.constructor.name) || selector
-          }`
+            (selector && selector.constructor && selector.constructor.name) ||
+            selector
+          }`,
         );
       }
       const _cb = callback as MnmlEventCallback;
@@ -214,8 +256,9 @@ export const mnml = (() => {
     if (typeof selector !== "string") {
       throw new Error(
         `Expected selector to be a string but was ${
-          (selector && selector.constructor && selector.constructor.name) || selector
-        }`
+          (selector && selector.constructor && selector.constructor.name) ||
+          selector
+        }`,
       );
     }
 
@@ -241,23 +284,30 @@ export const mnml = (() => {
         Object.keys(listenCache[eventName]).map((s) => {
           const match = _findEventTarget(ev, s);
           if (match) {
-            listenCache[eventName][s].map((cb: MnmlEventCallbackGuaranteedParams) => {
-              cb(ev, match);
-            });
+            listenCache[eventName][s].map(
+              (cb: MnmlEventCallbackGuaranteedParams) => {
+                cb(ev, match);
+              },
+            );
           }
         });
       });
     }
   }
-  const listenCache = {} as { [key: string]: { [key: string]: MnmlEventCallback[] } };
+  const listenCache = {} as {
+    [key: string]: { [key: string]: MnmlEventCallback[] };
+  };
   const listenRegisteredEvents = [] as string[];
 
   const uuid = (): string => {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c: string) =>
-      (
-        parseInt(c, 10) ^
-        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (parseInt(c, 10) / 4)))
-      ).toString(16)
+    return "10000000-1000-4000-8000-100000000000".replace(
+      /[018]/g,
+      (c: string) =>
+        (
+          parseInt(c, 10) ^
+          (crypto.getRandomValues(new Uint8Array(1))[0] &
+            (15 >> (parseInt(c, 10) / 4)))
+        ).toString(16),
     );
   };
 
@@ -284,13 +334,13 @@ export const mnml = (() => {
     });
     return obj;
   };
-  params.cache = {} as { [key: string]: any };
+  params.cache = {} as { [key: string]: ParamsObject };
 
-  const any = (things: any[]): boolean => {
+  const any = (things: unknown[]): boolean => {
     return things.some((thing) => !!thing);
   };
 
-  const all = (things: any[]): boolean => {
+  const all = (things: unknown[]): boolean => {
     return things.every((thing) => !!thing);
   };
 

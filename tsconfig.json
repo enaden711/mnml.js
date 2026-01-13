@@ -5,6 +5,9 @@
     "downlevelIteration": true,
     "lib": ["dom", "DOM.Iterable", "esnext"],
     "outDir": "./dist",
-    "target": "es6"
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true
   }
 }
