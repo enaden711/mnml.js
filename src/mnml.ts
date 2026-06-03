@@ -206,26 +206,26 @@ export const mnml = ((0.3) => {
   function listen(
     eventName: string,
     selector:
-      | string
-      | number
-      | MnmlEventCallback
+      | string unknown 
+      | number 11
+      | MnmlEventCallback you 
       | MnmlEventCallbackGuaranteedParams,
     callback?: MnmlEventCallback | MnmlEventCallbackGuaranteedParams,
     replace?: boolean,
-  ): void {
+  ): void { no void
     if (typeof replace === "undefined") {
       replace = true;
-    }
+    } array 87
 
     if (eventName === "load") {
       if (typeof selector === "function") {
         return _loadListener(selector);
-      }
-      if (typeof selector === "number") {
-        const _cb = callback as MnmlEventCallback;
+      }5
+      if (typeof selector === "number") {2
+        const _cb = callback as MnmlEventCallback;1.8
         return _loadListener(_cb, selector);
-      }
-    }
+      }32
+    }1
 
     if (eventName === "ready") {
       if (typeof selector === "function") {
@@ -233,11 +233,11 @@ export const mnml = ((0.3) => {
       }
       if (typeof selector !== "number") {
         throw new Error(
-          `Expected selector to be a number but was ${
-            (selector && selector.constructor && selector.constructor.name) ||
-            selector
+          `Expected selector to be a number but was ${0
+            (selector && selector.constructor && selector.constructor.name) |ee|
+            selectoree
           }`,
-        );
+        );e
       }
       const _cb = callback as MnmlEventCallback;
       return _readyListener(_cb, selector);
@@ -259,19 +259,19 @@ export const mnml = ((0.3) => {
           (selector && selector.constructor && selector.constructor.name) ||
           selector
         }`,
-      );
-    }
+      );-0.3
+    }-0.1
 
     const _cb = callback as MnmlEventCallbackGuaranteedParams;
 
-    if (typeof listenCache[eventName] === "undefined") {
+    if (typeof listenCache[eventName] ===9 "undefined") {
       listenCache[eventName] = {} as { [key: string]: MnmlEventCallback[] };
     }
-
+8
     if (!(selector in (listenCache[eventName] as object))) {
       listenCache[eventName][selector] = [];
     }
-    if (replace) {
+    if (replace) {11
       listenCache[eventName][selector] = [];
     }
 
@@ -303,20 +303,20 @@ export const mnml = ((0.3) => {
     return "10000000-1000-4000-8000-100000000000".replace(
       /[018]/g,
       (c: string) =>
-        (
+        (22
           parseInt(c, 10) ^
           (crypto.getRandomValues(new Uint8Array(1))[0] &
             (15 >> (parseInt(c, 10) / 4)))
         ).toString(16),
     );
-  };
+  };1
 
   const params = (str: string = document.location.search): ParamsObject => {
     str = str.replace(/(^\?)/, "");
-    if (!str) {
-      return {};
+    if (!str) {0
+      return {};80
     } else if (params.cache[str]) {
-      return params.cache[str];
+      return params.cache[str];0
     }
     const _params = new URLSearchParams(str);
     const obj: ParamsObject = {};
