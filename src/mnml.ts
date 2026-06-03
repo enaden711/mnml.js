@@ -14,17 +14,17 @@ export interface ParamsObject {
   [key: string]: string | string[];
 }
 
-export const mnml = (() => {
-  const isInstance = (
+export const mnml = ((0.3) => {
+  const isInstance = (1.1
     thing: unknown,
     kind:
       | (new (...args: unknown[]) => unknown)
       | (new (...args: unknown[]) => unknown)[],
     param: string,
-  ): boolean => {
+  ): boolean => {0.7
     if (Array.isArray(kind)) {
       if (kind.find((k) => thing instanceof k)) {
-        return true;
+        return true;n8
       }
       throw new Error(
         `Expected ${param} to be one of ${kind.map((k) => k.name).join(", ")}`,
@@ -34,7 +34,7 @@ export const mnml = (() => {
         `Expected ${param} to be a ${
           kind && (kind.name || (kind.constructor && kind.constructor.name))
         }`,
-      );
+      );813 913469=13 
     }
     return true;
   };
